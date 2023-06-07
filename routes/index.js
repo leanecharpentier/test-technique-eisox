@@ -49,6 +49,9 @@ async function main() {
       }      
     }
   const reponseSum = string + ' = ' + somme;
+  // Insertion du résultat de la somme dans la base de données
+  const insertSum = await collection.insertOne({resultSum:somme});
+
 
   // Calcul somme des factorielle
   var sommeFact = 0;
@@ -76,6 +79,9 @@ async function main() {
       }      
     }
   const reponseFactSum = string + ' = ' + sommeFact;
+  // Insertion du résultat de la somme des factorielles dans la base de données
+  const insertSumFact = await collection.insertOne({resultFactSum:sommeFact});
+
 
   // Calcul de la multiplication
   var multiplication = 1;
@@ -91,6 +97,9 @@ async function main() {
       }      
     }
   const reponseMultiplication = string + ' = ' + multiplication ;
+  // Insertion du résultat de la multiplication dans la base de données
+  const insertMultiplication = await collection.insertOne({resultMultiplication:multiplication});
+
 
   // Calcul de la division
   var division = 1;
@@ -106,32 +115,34 @@ async function main() {
       }      
     }
   const reponseDivision = string + ' = ' + division;
+  // Insertion du résultat de la division dans la base de données
+  const insertDivision = await collection.insertOne({resultDivision:division});
+
+  // Insertion de tous les résultats dans la base de données
+  const insertAllResult = await collection.insertOne({allResult: [{resultSum: somme}, {resultFactSum: sommeFact}, {resultMultiplication: multiplication}, {resultDivision: division}]});
+
 
 
   // Routes Test technique Eisox
 
   router.use('/calculator/sum', (req, res, next) => {
-    // const insertSum = await collection.insertOne({resultSum:somme});
     // Détail du calcul juste au dessus
     res.send(reponseSum);
   });
 
 
   router.use('/calculator/factSum', (req, res, next) => {
-    // const insertSum = await collection.insertOne({resultFactSum:somme});
     // Détail du calcul juste au dessus
     res.send(reponseFactSum);
     
   });
   
   router.use('/calculator/multiplication', (req, res, next) => {
-    // const insertMultiplication = await collection.insertOne({resultMultiplication:multiplication});
     // Détail du calcul juste au dessus
     res.send(reponseMultiplication);
   });
   
   router.use('/calculator/division', (req, res, next) => {
-    // const insertDivision = await collection.insertOne({resultDivision:division});
     // Détail du calcul juste au dessus
     res.send(reponseDivision);
   });
