@@ -26,11 +26,13 @@ async function main() {
   const db = client.db(dbName);
   const collection = db.collection('numbers');
 
-  // the following code examples can be pasted here...
 
+  // Ajout du tableau de nombre dans la base de données pour simuler la bdd de Eisox pour le test
   // const insertNumbers = await collection.insertOne({numbers:[1,2,3,-4,5,6]});
 
+  // Aller chercher le seul document présent dans la collection
   const numbers = await collection.findOne();
+  // Stocker les nombres dans une variable
   const arrayNumbers = numbers.numbers;
 
   // Calculer la somme
