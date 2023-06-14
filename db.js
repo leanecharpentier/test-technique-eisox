@@ -24,13 +24,5 @@ const findResult = async (key) => {
   };
   
 
-const findArray = async (key) => {
-    const collection = db.collection('numbers');
-    const result = await collection.findOne({ [key]: { $exists: true } });
-    return result;
-  };
 
-
-
-
-module.exports = { init, insertResult, findResult, findArray }
+module.exports = { init, insertResult, findResult }

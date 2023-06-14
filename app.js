@@ -1,5 +1,5 @@
 const express = require('express')
-const { insertResult, findResult,findArray } = require('./db')
+const { insertResult, findResult } = require('./db')
 
 const router = express.Router()
 
