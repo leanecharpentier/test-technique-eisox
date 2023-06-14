@@ -1,42 +1,140 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express')
+const { insertResult, findResult,findArray } = require('./db')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const router = express.Router()
 
-var app = express();
+// Calcul de la somme
+function sum (tab) {
+  var somme = 0;
+  for (let i = 0; i < tab.length; i++) {
+    somme += tab[i];      
+  }
+  return somme
+}
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Calcul somme des factorielle
+function sumFact (tab) {
+  var sommeFact = 0;
+  for (let i = 0; i < tab.length; i++) {
+    // Fonction factorielle
+    var fact = 1;
+    if (tab[i] == 0) {
+      fact = 1;
+    } else if (tab[i] < 0) {
+      fact = 0;
+    } else {
+      for (let nb = 1; nb <= tab[i]; nb++) {
+        fact *= nb;          
+      }
+    }
+    // Somme des factorielles
+    sommeFact += fact;
+  }
+  return sommeFact
+}
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// Calcul de la multiplication
+function multiplication (tab) { 
+  var multiplication = 1;
+  for (let i = 0; i < tab.length; i++) {
+    if (tab[i] == 0) {
+      return 0
+    } else {
+      multiplication *= tab[i]; 
+    }    
+  }
+  return multiplication
+}
+  
+
+// Calcul de la division
+function division (tab) {
+  var division = 1;
+  for (let i = 0; i < tab.length; i++) {
+    if (tab[i] == 0) {
+      const message = 'Il n\'est pas possible de diviser par 0'
+      return message
+    } else {
+      division /= tab[i];
+    }
+  }
+  return division
+}
+
+//Tous les calculs ensemble
+function allCalculs (tab) {
+  const somme = sum(tab);
+  const sommeFact = sumFact(tab);
+  const multi = multiplication(tab);
+  const divi = division(tab);
+  return {resultSum: somme, resultSumFact: sommeFact, resultMultiplication: multi, resultDivision: divi}
+}
+  
+
+// Fonction qui calcule et enregistre si le résultat n'est pas encore dans la base de données
+
+function save (key, res, calcul) {  
+  findResult([key])
+    .then((result) => {
+      if (result !== null) {
+        console.log('Le résultat est déjà dans la base de données');
+        console.log(result[key]);
+        res.status(200).json({ result: result[key] });
+      } else {
+        findResult('numbers')
+          .then((array) => {
+            const result = calcul(array.numbers);
+            console.log(result);
+            insertResult([key], result)
+              .then(() => {
+                console.log('Le résultat a bien été enregistré dans la base de données');
+                res.status(200).json({ result: result });
+              })
+              .catch((err) => {
+                console.log(err);
+                res.status(500).end();
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).end();
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).end();
+    });
+};
+
+// Routes 
+
+router.use('/calculator/sum', (req, res, next) => {
+  save('resultSum', res, sum)
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+router.use('/calculator/factSum', (req, res, next) => {
+  save('resultSumFact', res, sumFact)
 });
 
 
-module.exports = app;
+router.use('/calculator/multiplication', (req, res, next) => {
+  save('resultMultiplication', res, multiplication)
+});
+
+
+router.use('/calculator/division', (req, res, next) => {
+  save('resultDivision', res, division)
+});
+
+
+router.use('/calculator', (req, res, next) => {
+  save('resultAll', res, allCalculs)
+});
+
+
+
+
+module.exports = router
