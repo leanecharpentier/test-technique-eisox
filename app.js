@@ -51,8 +51,8 @@ function multiplication (tab) {
 
 // Calcul de la division
 function division (tab) {
-  var division = 1;
-  for (let i = 0; i < tab.length; i++) {
+  var division = tab[0];
+  for (let i = 1; i < tab.length; i++) {
     if (tab[i] == 0) {
       const message = 'Il n\'est pas possible de diviser par 0'
       return message
@@ -71,6 +71,8 @@ function allCalculs (tab) {
   const divi = division(tab);
   return {resultSum: somme, resultSumFact: sommeFact, resultMultiplication: multi, resultDivision: divi}
 }
+
+console.log(allCalculs([ -2, 1, 2]))
   
 
 // Fonction qui calcule et enregistre si le résultat n'est pas encore dans la base de données
