@@ -44,7 +44,7 @@ function division(tab) {
   let division = tab[0];
   for (let i = 1; i < tab.length; i++) {
     if (tab[i] == 0) {
-      const message = "Il n'est pas possible de diviser par 0";
+      const message = "division by 0 is impossible";
       return message;
     } else {
       division /= tab[i];
@@ -53,4 +53,4 @@ function division(tab) {
   return division;
 }
 
-module.exports = { sum, sumFact, multiplication, division}
+module.exports = { sum, sumFact, multiplication, division };

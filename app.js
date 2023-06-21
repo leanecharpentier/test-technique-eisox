@@ -1,10 +1,8 @@
 const express = require("express");
 const { findResult, updateResult, findDocument } = require("./db");
-const {sum, sumFact, multiplication, division} = require("./calculs.js")
+const { sum, sumFact, multiplication, division } = require("./calculs.js");
 
 const router = express.Router();
-
-
 
 //Tous les calculs ensemble
 async function allCalculs() {
@@ -20,6 +18,7 @@ async function allCalculs() {
   };
 }
 
+// Retourne le resultat du calcul
 async function save(key, calcul) {
   try {
     const findDocumentResult = await findDocument();
