@@ -1,5 +1,4 @@
-const { MongoClient, ObjectId } = require('mongodb')
-
+const { MongoClient, ObjectId } = require('mongodb') 
 const connectionUrl = 'mongodb://localhost:27017'
 const dbName = 'test-eisox'
 
@@ -19,11 +18,7 @@ const findDocument = async () => {
 };
 
 const findResult = async (key, document) => {
-  if (document[key]) {
-    return true 
-  } else {
-    return false
-  }
+  return document[key];
 };
 
 const updateResult = async (key, value, document) => {

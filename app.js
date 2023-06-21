@@ -5,9 +5,9 @@ const router = express.Router()
 
 // Calcul de la somme
 function sum (tab) {
-  var somme = 0;
-  for (let i = 0; i < tab.length; i++) {
-    somme += tab[i];      
+  let somme = 0;
+  for (const element of tab) {
+    somme += element;      
   }
   return somme
 }
@@ -15,16 +15,14 @@ function sum (tab) {
 
 // Calcul somme des factorielle
 function sumFact (tab) {
-  var sommeFact = 0;
-  for (let i = 0; i < tab.length; i++) {
+  let sommeFact = 0;
+  for (const element of tab) {
     // Fonction factorielle
-    var fact = 1;
-    if (tab[i] == 0) {
-      fact = 1;
-    } else if (tab[i] < 0) {
+    let fact = 1;
+    if (element < 0) {
       fact = 0;
     } else {
-      for (let nb = 1; nb <= tab[i]; nb++) {
+      for (let nb = 1; nb <= element; nb++) {
         fact *= nb;          
       }
     }
@@ -37,12 +35,12 @@ function sumFact (tab) {
 
 // Calcul de la multiplication
 function multiplication (tab) { 
-  var multiplication = 1;
-  for (let i = 0; i < tab.length; i++) {
-    if (tab[i] == 0) {
+  let multiplication = 1;
+  for (const element of tab) {
+    if (element == 0) {
       return 0
     } else {
-      multiplication *= tab[i]; 
+      multiplication *= element; 
     }    
   }
   return multiplication
@@ -51,7 +49,7 @@ function multiplication (tab) {
 
 // Calcul de la division
 function division (tab) {
-  var division = tab[0];
+  let division = tab[0];
   for (let i = 1; i < tab.length; i++) {
     if (tab[i] == 0) {
       const message = 'Il n\'est pas possible de diviser par 0'
@@ -86,7 +84,7 @@ async function save (key, calcul) {
       } else {
         console.log('The result was not in database');
         const resultCalcul = calcul(arrayNumbers) ;
-        const insert = await updateResult(key, resultCalcul, findDocumentResult)
+        await updateResult(key, resultCalcul, findDocumentResult)
         return resultCalcul
       }
     } else {
@@ -126,7 +124,7 @@ router.use('/calculator/division', async (req, res, next) => {
 
 
 router.use('/calculator', async (req, res) => {
-  result = await save('resultAll', allCalculs)
+  const result = await save('resultAll', allCalculs)
   res.status(200).json(result);
 });
 
