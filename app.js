@@ -1,5 +1,5 @@
 const express = require('express')
-const { insertResult, findResult } = require('./db')
+const { findResult, updateResult, findDocument } = require('./db')
 
 const router = express.Router()
 
@@ -64,78 +64,71 @@ function division (tab) {
 }
 
 //Tous les calculs ensemble
-function allCalculs (tab) {
-  const somme = sum(tab);
-  const sommeFact = sumFact(tab);
-  const multi = multiplication(tab);
-  const divi = division(tab);
+async function allCalculs () {
+  const somme = await save('resultSum', sum);
+  const sommeFact = await save('resultSumFact', sumFact);
+  const multi = await save('resultMultiplication', multiplication);
+  const divi =  await save('resultDivision', division);
   return {resultSum: somme, resultSumFact: sommeFact, resultMultiplication: multi, resultDivision: divi}
+
 }
 
-console.log(allCalculs([ -2, 1, 2]))
-  
 
-// Fonction qui calcule et enregistre si le résultat n'est pas encore dans la base de données
-
-function save (key, res, calcul) {  
-  findResult([key])
-    .then((result) => {
-      if (result !== null) {
-        console.log('Le résultat est déjà dans la base de données');
-        console.log(result[key]);
-        res.status(200).json({ result: result[key] });
+async function save (key, calcul) { 
+  try {
+    const findDocumentResult = await findDocument();
+    const arrayNumbers = findDocumentResult.numbers ;
+    if (key != 'resultAll') {
+      const result = await findResult(key, findDocumentResult);
+      if (result) {
+        console.log('The result is allready in database');
+        return findDocumentResult[key]
       } else {
-        findResult('numbers')
-          .then((array) => {
-            const result = calcul(array.numbers);
-            console.log(result);
-            insertResult([key], result)
-              .then(() => {
-                console.log('Le résultat a bien été enregistré dans la base de données');
-                res.status(200).json({ result: result });
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(500).end();
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).end();
-          });
+        console.log('The result was not in database');
+        const resultCalcul = calcul(arrayNumbers) ;
+        const insert = await updateResult(key, resultCalcul, findDocumentResult)
+        return resultCalcul
       }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).end();
-    });
+    } else {
+      const resultCalcul = await calcul(arrayNumbers) ;
+      return resultCalcul;
+    }
+    
+  } catch (error) {
+    console.error(error);
+  } 
 };
+
 
 // Routes 
 
-router.use('/calculator/sum', (req, res, next) => {
-  save('resultSum', res, sum)
+router.use('/calculator/sum', async (req, res, next) => {
+  const result = await save('resultSum', sum)
+  res.status(200).json(result);
 });
 
-router.use('/calculator/factSum', (req, res, next) => {
-  save('resultSumFact', res, sumFact)
-});
-
-
-router.use('/calculator/multiplication', (req, res, next) => {
-  save('resultMultiplication', res, multiplication)
+router.use('/calculator/factSum', async (req, res, next) => {
+  const result = await save('resultSumFact', sumFact)
+  res.status(200).json(result);
 });
 
 
-router.use('/calculator/division', (req, res, next) => {
-  save('resultDivision', res, division)
+router.use('/calculator/multiplication', async (req, res, next) => {
+  const result = await save('resultMultiplication', multiplication)
+  res.status(200).json(result);
 });
 
 
-router.use('/calculator', (req, res, next) => {
-  save('resultAll', res, allCalculs)
+router.use('/calculator/division', async (req, res, next) => {
+  const result = await save('resultDivision', division)
+  res.status(200).json(result);
 });
 
+
+router.use('/calculator', async (req, res) => {
+  result = await save('resultAll', allCalculs)
+  res.status(200).json(result);
+});
 
 
 

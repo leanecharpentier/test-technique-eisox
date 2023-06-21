@@ -12,17 +12,27 @@ const init = () =>
   })
 
 
-const insertResult = (key, result) => {
-    const collection = db.collection('numbers')
-    return collection.insertOne({[key]: result})
-}
+const findDocument = async () => {
+  const collection = db.collection('numbers');
+  const document = await collection.findOne();
+  return document;
+};
 
-const findResult = async (key) => {
-    const collection = db.collection('numbers');
-    const result = await collection.findOne({ [key]: { $exists: true } });
-    return result;
-  };
-  
+const findResult = async (key, document) => {
+  if (document[key]) {
+    return true 
+  } else {
+    return false
+  }
+};
+
+const updateResult = async (key, value, document) => {
+  const collection = db.collection('numbers');
+  const filter = { _id: new ObjectId(document._id) };
+  const update = { $set: { [key]: value } };
+  const result = await collection.updateOne(filter, update);
+  return result
+};
 
 
-module.exports = { init, insertResult, findResult }
+module.exports = { init, updateResult, findResult, findDocument }
