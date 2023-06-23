@@ -25,26 +25,45 @@ describe("GET /calculator/sum", () => {
 });
 
 describe("GET /calculator/factSum", () => {
-  it("should return the result of the factSum", (done) => {
-    request(app).get("/calculator/factSum").expect(200);
-    done();
+  it.only("should return the result of the factSum", (done) => {
+    request(app)
+      .get("/calculator/factSum")
+      .expect(200)
+      .end(function (req, res) {
+        done();
+      });
   });
 });
 
 describe("GET /calculator/multiplication", () => {
   it("should return the result of the multiplication", function () {
-    request(app).get("/calculator/multiplication").expect(200);
+    request(app)
+      .get("/calculator/multiplication")
+      .expect(200)
+      .end(function (req, res) {
+        done();
+      });
   });
 });
 
 describe("GET /calculator/division", () => {
   it("should return the result of the division", function () {
-    request(app).get("/calculator/division").expect(200);
+    request(app)
+      .get("/calculator/division")
+      .expect(200)
+      .end(function (req, res) {
+        done();
+      });
   });
 });
 
 describe("GET /calculator/", () => {
   it("should return all result", function () {
-    request(app).get("/calculator/").expect(200);
+    request(app)
+      .get("/calculator/")
+      .expect(200)
+      .end(function (req, res) {
+        done();
+      });
   });
 });

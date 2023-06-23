@@ -5,10 +5,11 @@
   "scripts": {
     "start": "node ./index.js",
     "test": "mocha ./tests/test.js",
-    "test-e2e": "mocha ./tests/test-e2e.js"
+    "test-e2e": "mocha ./tests/test-e2e.js --inspect"
   },
   "dependencies": {
     "express": "~4.16.1",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.6.0",
     "mongoose": "^7.3.0"
   },

@@ -1,8 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const { init } = require('./db.js')
+const { init, close } = require('./db.js')
 const routes = require('./app.js')
-const { close } = require("./db.js");
+
 let server;
 
 const app = express()
@@ -16,7 +16,9 @@ init().then(() => {
 
 async function closeServer () {
   await close()
-  server.close()
+  server.close(() => {
+    console.log('Server closed');
+  })
 }
 
 module.exports = { app, closeServer}

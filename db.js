@@ -58,8 +58,8 @@ const updateResult = async (key, value, document) => {
 };
 
 async function close() {
-  await mongoose.connection.close(true);
-  console.log('Database close')
+  await mongoose.disconnect();
+  console.log('Database closed')
 }
 
 module.exports = { init, findDocument, findResult, updateResult, close }
