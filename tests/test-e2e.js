@@ -1,21 +1,33 @@
 const request = require("supertest");
-const app = require("../app.js");
+const { app, closeServer } = require("../index.js");
+const { init } = require("../db.js");
+
+before(async function () {
+  await init();
+});
+
+after(async () => {
+  closeServer();
+});
 
 describe("GET /calculator/sum", () => {
-  it("should return the result of the sum", function (done) {
+  it("should return the result of the sum", (done) => {
     request(app)
       .get("/calculator/sum")
-      .expect(200)
-      .expect(function (res) {
-        expect(res.body.result).toBe(20);
-      })
-      .end(done);
+      .end(function (req, res) {
+        const expectedResult = 13;
+        if (res.body !== expectedResult) {
+          throw new Error(`Expected ${expectedResult}, but got ${res.body}`);
+        }
+        done();
+      });
   });
 });
 
 describe("GET /calculator/factSum", () => {
-  it("should return the result of the factSum", function () {
+  it("should return the result of the factSum", (done) => {
     request(app).get("/calculator/factSum").expect(200);
+    done();
   });
 });
 

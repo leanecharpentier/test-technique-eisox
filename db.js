@@ -41,7 +41,6 @@ const { Numbers } = require('./models.js')
 
 async function init() {
   await mongoose.connect('mongodb://127.0.0.1:27017/test-eisox');
-  console.log('Connected successfully to database')
 }
 
 const findDocument = async () => {
@@ -49,7 +48,7 @@ const findDocument = async () => {
   return document
 }
 
-const findResult = async(key, document) => {
+const findResult = async (key, document) => {
   return document[key];
 }
 
@@ -58,4 +57,9 @@ const updateResult = async (key, value, document) => {
   await document.save();
 };
 
-module.exports = { init, findDocument, findResult, updateResult }
+async function close() {
+  await mongoose.connection.close(true);
+  console.log('Database close')
+}
+
+module.exports = { init, findDocument, findResult, updateResult, close }
