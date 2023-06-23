@@ -45,7 +45,7 @@ async function save(key, calcul) {
 
 // Routes
 
-router.use("/calculator/sum", async (req, res, next) => {
+router.get("/calculator/sum", async (req, res, next) => {
   const result = await save("resultSum", sum);
   res.status(200).json(result);
 });

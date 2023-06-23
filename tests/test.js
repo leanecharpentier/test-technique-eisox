@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { sum, sumFact, multiplication, division } = require("./calculs.js");
+const { sum, sumFact, multiplication, division } = require("../calculs.js");
 
 // Test de la fonction Sum
 describe("Array Sum", function () {
